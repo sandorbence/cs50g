@@ -249,8 +249,10 @@ function love.update(dt)
         local diff = player1.y - ball.y
         if diff >= 0 then
             player1.dy = -PADDLE_SPEED
-        else
+        elseif diff <= -player1.height then
             player1.dy = PADDLE_SPEED
+        else
+            player1.dy = 0
         end
     end
 
@@ -267,8 +269,10 @@ function love.update(dt)
         local diff = player2.y - ball.y
         if diff >= 0 then
             player2.dy = -PADDLE_SPEED
-        else
+        elseif diff <= -player2.height then
             player2.dy = PADDLE_SPEED
+        else
+            player2.dy = 0
         end
     end
     -- update our ball based on its DX and DY only if we're in play state;
