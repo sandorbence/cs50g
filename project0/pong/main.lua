@@ -13,7 +13,7 @@
 
     This version is built to more closely resemble the NES than
     the original Pong machines or the Atari 2600 in terms of
-    resolution, though in widescreen (16:9) so it looks nicer on 
+    resolution, though in widescreen (16:9) so it looks nicer on
     modern systems.
 ]]
 
@@ -92,6 +92,10 @@ function love.load()
     -- detected by other functions and modules
     player1 = Paddle(10, 30, 5, 20)
     player2 = Paddle(VIRTUAL_WIDTH - 10, VIRTUAL_HEIGHT - 30, 5, 20)
+
+    -- initialize both players as manually controlled
+    player1Ai = false
+    player2Ai = false
 
     -- place a ball in the middle of the screen
     ball = Ball(VIRTUAL_WIDTH / 2 - 2, VIRTUAL_HEIGHT / 2 - 2, 4, 4)
@@ -233,12 +237,21 @@ function love.update(dt)
     -- paddles can move no matter what state we're in
     --
     -- player 1
-    if love.keyboard.isDown('w') then
-        player1.dy = -PADDLE_SPEED
-    elseif love.keyboard.isDown('s') then
-        player1.dy = PADDLE_SPEED
+    if not player1Ai then
+        if love.keyboard.isDown('w') then
+            player1.dy = -PADDLE_SPEED
+        elseif love.keyboard.isDown('s') then
+            player1.dy = PADDLE_SPEED
+        else
+            player1.dy = 0
+        end
     else
-        player1.dy = 0
+        local diff = player1.y - ball.y
+        if diff >= 0 then
+            player1.dy = -PADDLE_SPEED
+        else
+            player1.dy = PADDLE_SPEED
+        end
     end
 
     -- player 2
@@ -296,6 +309,8 @@ function love.keypressed(key)
                 servingPlayer = 1
             end
         end
+    elseif key == 'u' then
+        player1Ai = not player1Ai
     end
 end
 
