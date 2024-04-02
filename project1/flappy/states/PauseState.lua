@@ -22,6 +22,13 @@ function PauseState:update(dt)
 end
 
 function PauseState:render()
+    local image = love.graphics.newImage('pause.png')
+    local scale = 0.2
+    local scaledWidth = image:getWidth() * scale
+    local scaledHeight = image:getHeight() * scale
+    local posX = (VIRTUAL_WIDTH - scaledWidth) / 2
+    local posY = (VIRTUAL_HEIGHT - scaledHeight) / 2
+    love.graphics.draw(image, posX, posY, 0 , scale, scale)
 end
 
 function PauseState:enter(params)

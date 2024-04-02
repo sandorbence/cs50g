@@ -56,5 +56,5 @@ function placeMedal(image)
     local scaledHeight = image:getHeight() * scale
     local posX = (VIRTUAL_WIDTH - scaledWidth) / 2
     local posY = (VIRTUAL_HEIGHT - scaledHeight) / 2
-    love.graphics.draw(image, posX, posY, 0 , 0.05, 0.05)
+    love.graphics.draw(image, posX, posY, 0 , scale, scale)
 end
