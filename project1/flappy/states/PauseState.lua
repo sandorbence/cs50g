@@ -11,7 +11,6 @@ end
 function PauseState:update(dt)
      -- resume the game
      if love.keyboard.wasPressed('p') then
-        print(self.score)
         gStateMachine:change('play', {
             bird = self.bird,
             pipePairs = self.pipePairs,
@@ -31,7 +30,11 @@ function PauseState:enter(params)
     self.timer = params.timer
     self.score = params.score
     self.lastY = params.lastY
+
+    sounds['music']:pause()
+    sounds['pause']:play()
 end
 
 function PauseState:exit()
+    sounds['music']:play()
 end
