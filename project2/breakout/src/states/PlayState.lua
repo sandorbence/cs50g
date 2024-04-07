@@ -37,6 +37,7 @@ function PlayState:enter(params)
     self.balls[1].dy = math.random(-50, -60)
 
     self.timer = 0
+    self.hitBricks = 0
 end
 
 function PlayState:update(dt)
@@ -119,6 +120,8 @@ function PlayState:update(dt)
         if brick.inPlay then
             for j, ball in pairs(self.balls) do
                 if ball:collides(brick) then
+                    self.hitBricks = self.hitBricks + 1
+
                     -- add to score
                     self.score = self.score + (brick.tier * 200 + brick.color * 25)
 
@@ -230,6 +233,13 @@ function PlayState:update(dt)
                 end
             end
         end
+    end
+
+    if self.hitBricks >= math.random(10, 15) and self.powerup == nil then
+        self.powerup = Powerup(math.random(10))
+        self.hitBricks = 0
+        -- do not spawn powerups so frequently
+        self.timer = 0
     end
 
     -- for rendering particle systems
