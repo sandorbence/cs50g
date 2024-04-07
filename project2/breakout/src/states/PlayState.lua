@@ -54,7 +54,7 @@ function PlayState:update(dt)
 
     self.timer = self.timer + dt
 
-    if self.timer >= 5 then
+    if self.timer >= 5 and self.powerup == nil then
         self.powerup = Powerup(math.random(1, 10))
         self.timer = 0
     end
@@ -65,6 +65,9 @@ function PlayState:update(dt)
 
     if self.powerup ~= nil then
         self.powerup:update(dt)
+
+        if self.powerup:collides(self.paddle) then
+        end
     end
 
     if self.ball:collides(self.paddle) then
