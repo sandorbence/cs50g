@@ -71,6 +71,17 @@ function PlayState:update(dt)
         self.powerup:update(dt)
 
         if self.powerup:collides(self.paddle) then
+            self.powerup = nil
+            
+            for i = 0, 1 do
+                local newBall = Ball()
+                newBall.skin = math.random(7)
+                newBall.x = self.paddle.x + (self.paddle.width / 2) - 4
+                newBall.y = self.paddle.y - 8
+                newBall.dx = math.random(-200, 200)
+                newBall.dy = math.random(-50, -60)
+                table.insert(self.balls, newBall)
+            end
         end
     end
 
@@ -193,7 +204,7 @@ function PlayState:update(dt)
     for k, ball in pairs(self.balls) do
     -- if ball goes below bounds, revert to serve state and decrease health
         if ball.y >= VIRTUAL_HEIGHT then
-            table.remove(self.balls, ball)
+            table.remove(self.balls, k)
             if next(self.balls) == nil then
                 self.health = self.health - 1
                 gSounds['hurt']:play()
