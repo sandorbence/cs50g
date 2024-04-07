@@ -55,8 +55,11 @@ function PlayState:update(dt)
 
     self.timer = self.timer + dt
 
-    if self.timer >= 5 and self.powerup == nil then
-        self.powerup = Powerup(math.random(1, 10))
+    if self.timer >= math.random(15, 25) then
+        if self.powerup == nil then
+            self.powerup = Powerup(math.random(10))
+        end
+
         self.timer = 0
     end
 
