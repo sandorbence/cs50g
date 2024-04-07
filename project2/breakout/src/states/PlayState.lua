@@ -38,6 +38,7 @@ function PlayState:enter(params)
 
     self.timer = 0
     self.hitBricks = 0
+    self.paddleGrowthScore = 1000
 end
 
 function PlayState:update(dt)
@@ -124,6 +125,11 @@ function PlayState:update(dt)
 
                     -- add to score
                     self.score = self.score + (brick.tier * 200 + brick.color * 25)
+
+                    if self.score >= self.paddleGrowthScore then
+                        self.paddle:increaseSize()
+                        self.paddleGrowthScore = self.paddleGrowthScore * 2
+                    end
 
                     -- trigger the brick's hit function, which removes it from play
                     brick:hit()
@@ -217,6 +223,7 @@ function PlayState:update(dt)
             table.remove(self.balls, k)
             if next(self.balls) == nil then
                 self.health = self.health - 1
+                self.paddle:decreaseSize()
                 gSounds['hurt']:play()
 
                 if self.health == 0 then
