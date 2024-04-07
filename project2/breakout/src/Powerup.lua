@@ -1,6 +1,7 @@
 Powerup = Class{}
 
 function Powerup:init(skin)
+    print(skin)
     self.x = math.random(VIRTUAL_WIDTH - 16)
     self.y = math.random(100)
 

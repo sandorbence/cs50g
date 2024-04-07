@@ -59,7 +59,7 @@ function PlayState:update(dt)
 
     if self.timer >= math.random(20, 25) then
         if self.powerup == nil then
-            self.powerup = Powerup(math.random(10))
+            self.powerup = Powerup(9)
         end
 
         self.timer = 0
@@ -251,7 +251,7 @@ function PlayState:update(dt)
     end
 
     if self.hitBricks >= #self.bricks / 5 and self.powerup == nil then
-        self.powerup = Powerup(math.random(10))
+        self.powerup = Powerup(9)
         self.hitBricks = 0
         -- do not spawn powerups so frequently
         self.timer = 0
