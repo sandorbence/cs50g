@@ -75,6 +75,7 @@ function PlayState:update(dt)
         self.powerup:update(dt)
 
         if self.powerup:collides(self.paddle) then
+            self.timer = 0
             self.powerup = nil
             
             for i = 0, 1 do
@@ -120,13 +121,16 @@ function PlayState:update(dt)
         if brick.inPlay then
             for j, ball in pairs(self.balls) do
                 if ball:collides(brick) then
-                    self.hitBricks = self.hitBricks + 1
 
                     -- add to score
                     self.score = self.score + (brick.tier * 200 + brick.color * 25)
 
                     -- trigger the brick's hit function, which removes it from play
                     brick:hit()
+
+                    if not brick.inPlay then
+                        self.hitBricks = self.hitBricks + 1
+                    end
 
                     -- if we have enough points, recover a point of health
                     if self.score > self.recoverPoints then
@@ -233,6 +237,10 @@ function PlayState:update(dt)
                 end
             end
         end
+    end
+
+    if self.powerup ~= nil and self.powerup.y >= VIRTUAL_HEIGHT then
+        self.powerup = nil
     end
 
     if self.hitBricks >= #self.bricks / 5 and self.powerup == nil then
