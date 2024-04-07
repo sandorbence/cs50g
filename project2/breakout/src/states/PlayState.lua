@@ -34,6 +34,8 @@ function PlayState:enter(params)
     -- give ball random starting velocity
     self.ball.dx = math.random(-200, 200)
     self.ball.dy = math.random(-50, -60)
+
+    self.timer = 0
 end
 
 function PlayState:update(dt)
@@ -50,9 +52,20 @@ function PlayState:update(dt)
         return
     end
 
+    self.timer = self.timer + dt
+
+    if self.timer >= 5 then
+        self.powerup = Powerup(math.random(1, 10))
+        self.timer = 0
+    end
+
     -- update positions based on velocity
     self.paddle:update(dt)
     self.ball:update(dt)
+
+    if self.powerup ~= nil then
+        self.powerup:update(dt)
+    end
 
     if self.ball:collides(self.paddle) then
         -- raise ball above paddle in case it goes below it, then reverse dy
@@ -210,6 +223,10 @@ function PlayState:render()
 
     self.paddle:render()
     self.ball:render()
+
+    if self.powerup ~= nil then
+        self.powerup:render()
+    end
 
     renderScore(self.score)
     renderHealth(self.health)
