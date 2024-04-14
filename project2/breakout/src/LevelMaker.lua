@@ -48,7 +48,7 @@ function LevelMaker.createMap(level)
     local highestColor = math.min(5, level % 5 + 3)
 
     -- one in four chance to spwan a locked brick
-    lockedBrick = math.random(4) == 1
+    lockedBrickSpawn = math.random(4) == 1
 
     -- lay out bricks such that they touch each other and fill the space
     for y = 1, numRows do
@@ -126,6 +126,10 @@ function LevelMaker.createMap(level)
     if #bricks == 0 then
         return self.createMap(level)
     else
+        if lockedBrickSpawn then
+            local switchPlace = math.random(#bricks)
+            bricks[switchPlace]:setAsLocked()
+        end
         return bricks
     end
 end

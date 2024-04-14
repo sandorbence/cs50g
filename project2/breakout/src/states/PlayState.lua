@@ -38,7 +38,12 @@ function PlayState:enter(params)
 
     self.timer = 0
     self.hitBricks = 0
+    self.plusBallSpwan = #self.bricks / 3
     self.paddleGrowthScore = 1000
+
+    self.powerups = {}
+    keyGathered = false
+    self.keySpwaned = false
 end
 
 function PlayState:update(dt)
@@ -58,8 +63,16 @@ function PlayState:update(dt)
     self.timer = self.timer + dt
 
     if self.timer >= math.random(20, 25) then
-        if self.powerup == nil then
-            self.powerup = Powerup(9)
+        local spwanPlusBall = math.random(2) == 1
+        if spwanPlusBall then
+            plusBall = Powerup(9)
+            table.insert(self.powerups, plusBall)
+        else
+            if lockedBrickSpawn and not keyGathered and not self.keySpwaned then
+                key = Powerup(10)
+                table.insert(self.powerups, key)
+                self.keySpwaned = true
+            end
         end
 
         self.timer = 0
@@ -72,24 +85,28 @@ function PlayState:update(dt)
         ball:update(dt)
     end
 
-    if self.powerup ~= nil then
-        self.powerup:update(dt)
+    for k, powerup in pairs(self.powerups) do
+        powerup:update(dt)
 
-        if self.powerup:collides(self.paddle) then
-            self.timer = 0
-            self.powerup = nil
+        if powerup:collides(self.paddle) then
             
-            for i = 0, 1 do
-                local newBall = Ball()
-                newBall.skin = math.random(7)
-                newBall.x = self.paddle.x + (self.paddle.width / 2) - 4
-                newBall.y = self.paddle.y - 8
-                newBall.dx = math.random(-200, 200)
-                newBall.dy = math.random(-50, -60)
-                table.insert(self.balls, newBall)
+            if powerup.skin == 9 then
+                for i = 0, 1 do
+                    local newBall = Ball()
+                    newBall.skin = math.random(7)
+                    newBall.x = self.paddle.x + (self.paddle.width / 2) - 4
+                    newBall.y = self.paddle.y - 8
+                    newBall.dx = math.random(-200, 200)
+                    newBall.dy = math.random(-50, -60)
+                    table.insert(self.balls, newBall)
+                end
+            elseif powerup.skin == 10 then
+                keyGathered = true
             end
+
+            table.remove(self.powerups, k)
         end
-    end
+    end   
 
     for k, ball in pairs(self.balls) do
 
@@ -124,7 +141,9 @@ function PlayState:update(dt)
                 if ball:collides(brick) then
 
                     -- add to score
-                    self.score = self.score + (brick.tier * 200 + brick.color * 25)
+                    if not brick.locked then
+                        self.score = self.score + (brick.tier * 200 + brick.color * 25)
+                    end
 
                     if self.score >= self.paddleGrowthScore then
                         self.paddle:increaseSize()
@@ -246,15 +265,27 @@ function PlayState:update(dt)
         end
     end
 
-    if self.powerup ~= nil and self.powerup.y >= VIRTUAL_HEIGHT then
-        self.powerup = nil
+    for k, powerup in pairs(self.powerups) do
+        if powerup.y >= VIRTUAL_HEIGHT then
+            table.remove(self.powerups, k)
+            if powerup.skin == 10 then
+                self.keySpwaned = false
+            end
+        end
     end
 
-    if self.hitBricks >= #self.bricks / 3 and self.powerup == nil then
-        self.powerup = Powerup(9)
-        self.hitBricks = 0
+    if self.hitBricks >= self.plusBallSpwan then
+        local plusBall = Powerup(9)
+        table.insert(self.powerups, plusBall)
+        self.plusBallSpwan = self.plusBallSpwan + self.plusBallSpwan
         -- do not spawn powerups so frequently
         self.timer = 0
+    end
+
+    if self.hitBricks >= #self.bricks / 2 and not keyGathered and not self.keySpwaned then
+        local key = Powerup(10)
+        table.insert(self.powerups, key)
+        self.keySpwaned = true
     end
 
     -- for rendering particle systems
@@ -284,8 +315,8 @@ function PlayState:render()
         ball:render()
     end
 
-    if self.powerup ~= nil then
-        self.powerup:render()
+    for k, powerup in pairs(self.powerups) do
+        powerup:render()
     end
 
     renderScore(self.score)
