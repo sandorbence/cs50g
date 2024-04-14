@@ -250,7 +250,7 @@ function PlayState:update(dt)
         self.powerup = nil
     end
 
-    if self.hitBricks >= #self.bricks / 5 and self.powerup == nil then
+    if self.hitBricks >= #self.bricks / 3 and self.powerup == nil then
         self.powerup = Powerup(9)
         self.hitBricks = 0
         -- do not spawn powerups so frequently

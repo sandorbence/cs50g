@@ -48,7 +48,7 @@ function LevelMaker.createMap(level)
     local highestColor = math.min(5, level % 5 + 3)
 
     -- one in four chance to spwan a locked brick
-    local lockedBrick = math.random(4) == 1
+    lockedBrick = math.random(4) == 1
 
     -- lay out bricks such that they touch each other and fill the space
     for y = 1, numRows do
